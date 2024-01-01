@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-
-const backendUrl = "http://localhost:4887";
+import * as config from "../config";
 
 interface IFramework {
 	name: string;
@@ -15,23 +14,34 @@ export const PageWelcome = () => {
 
 	useEffect(() => {
 		(async () => {
-			const response = await axios.get(`${backendUrl}`);
-			const _backendAppName = response.data.appName;
-			setBackendAppName(_backendAppName);
+			try {
+				const response = await axios.get(`${config.getBackendUrl()}`);
+				const _backendAppName = response.data.appName;
+				setBackendAppName(_backendAppName);
+			} catch {
+				setBackendAppName("ERROR");
+			}
 		})();
 	}, []);
 
 	useEffect(() => {
 		(async () => {
-			const response = await axios.get(`${backendUrl}/frameworks`);
-			const _frameworks = response.data;
-			setFrameworks(_frameworks);
+			try {
+				const response = await axios.get(
+					`${config.getBackendUrl()}/frameworks`
+				);
+				const _frameworks = response.data;
+				setFrameworks(_frameworks);
+			} catch {
+				setFrameworks([]);
+			}
 		})();
 	}, []);
 
 	return (
 		<>
 			<p>This is the welcome page.</p>
+			<p>Backend URL is: {config.getBackendUrl()}</p>
 			<p>Backend app name is: {backendAppName}</p>
 			<h2 className="text-xl mt-6 mb-3">JavaScript Frameworks</h2>
 			<ul className="list-disc ml-6">
